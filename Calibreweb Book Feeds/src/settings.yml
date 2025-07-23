@@ -1,0 +1,43 @@
+---
+strategy: polling
+no_screen_padding: 'no'
+dark_mode: 'no'
+static_data: ''
+polling_verb: get
+polling_url: "{{server_url}}/opds/{{feed}}"
+polling_headers: "X-REMOTE-USER={{username}}" #{{header_name}} not working in trmnlp
+polling_body: ''
+id: 121797
+custom_fields:
+- keyname: server_url
+  field_type: string
+  name: Calibre-Web Server URL
+  description: Your Calibre-Web server URL (without trailing slash)
+  placeholder: https://your-calibre-web.com
+- keyname: header_name
+  field_type: string
+  name: Reverse Proxy Header Name
+  description: Your Calibre-Web reverse proxy header name. Set it under Admin/Edit Basic Configuration/Feature Configuration/Allow Reverse Proxy Header Authentication. Login Type/Use Standard Authentication.
+  optional: true
+- keyname: username
+  field_type: string
+  name: Username
+  description: Your Calibre-Web username
+  optional: true
+- keyname: feed
+  field_type: select
+  name: Feed Type
+  description: Choose which feed to display
+  options:
+  - new
+  - hot
+  - discover
+  default: new
+- keyname: doesnt_matter
+  name: About This Plugin
+  field_type: author_bio
+  description: Pulls book feeds from your Calibre-Web server.
+  github_url: https://github.com/AtomicBasilDolphin
+  email_address: superrad@gmail.com
+name: Calibreweb Book Feeds
+refresh_interval: 60
