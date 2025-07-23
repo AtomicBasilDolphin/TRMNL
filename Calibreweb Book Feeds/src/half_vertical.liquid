@@ -1,0 +1,27 @@
+<style>
+  /* === Half Vertical - 2 Rows === */
+  .grid {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .book-cover,
+  .placeholder-cover {
+    height: 180px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+
+  .book {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+  }
+
+  /* Only show first 2 books */
+  .book:nth-child(n+3) {
+    display: none;
+  }
+
+</style>

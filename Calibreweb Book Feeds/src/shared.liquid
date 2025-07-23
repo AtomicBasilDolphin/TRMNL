@@ -1,0 +1,138 @@
+<style>
+  .book-cover,
+  .placeholder-cover {
+    border-radius: 8px;
+    margin-bottom: 15px; 
+    display: block;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .placeholder-cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 16px;
+    background: #ddd;
+  }
+
+</style>
+
+<!-- Title Logic -->
+{% assign feed_type = trmnl.plugin_settings.custom_fields_values.feed %}
+{% case feed_type %}
+{% when 'hot' %}
+{% assign title = 'Hot Books' %}
+{% when 'new' %}
+{% assign title = 'New Books' %}
+{% when 'discover' %}
+{% assign title = 'Random Books' %}
+{% else %}
+{% assign title = 'Calibre Books' %}
+{% endcase %}
+
+<!-- Main content layout -->
+<div class="layout">
+  <div class="grid grid--cols-3">
+    <!-- Handle both single entry and array of entries -->
+    {% if feed.entry.title %}
+
+    <!-- Single case -->
+    {% assign book = feed.entry %}
+    <div class="book">
+      {% assign cover_url = '' %}
+      {% for link in book.link %}
+      <!-- Only follow cover links -->
+      {% if link.rel == 'http://opds-spec.org/image' or link.rel == 'http://opds-spec.org/image/thumbnail' %}
+      {% assign cover_url = link.href %}
+      {% break %}
+      {% endif %}
+      {% endfor %}
+
+      {% if cover_url != '' %}
+      {% assign full_cover_url = trmnl.plugin_settings.custom_fields_values.server_url | append: cover_url %}
+      <img src="{{ full_cover_url }}" alt="{{ book.title }} cover" class="book-cover image-dither image-stroke layout--block rounded--small md:rounded lg:rounded--large">
+      {% else %}
+      <div class="placeholder-cover layout--flex flex--center flex--column text--gray-2 value bg--gray-4 rounded--small md:rounded lg:rounded--large">No Cover</div>
+      {% endif %}
+
+      <div class="book-info">
+        <div class="richtext">
+          <div class="content text--center w--auto"  data-content-limiter="true">
+            <p class="book-title">{{ book.title }}</p>
+          </div>
+        </div>
+        <div class="richtext">
+          <div class="content text--center w--auto text--gray-2 content--small" data-content-limiter="true">
+            <p class="book-author">
+              {% if book.author.name %}
+              {{ book.author.name }}
+              {% elsif book.author[0].name %}
+              {% for author in book.author limit: 2 %}
+              {{ author.name }}{% unless forloop.last and book.author.size <= 2 %}, {% endunless %}
+                {% endfor %}
+                {% if book.author.size > 2 %}et al.{% endif %}
+                {% else %}
+                Unknown Author
+                {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <!-- Array case -->
+  {% for book in feed.entry limit: 3 %}
+  <div class="book">
+    {% assign cover_url = '' %}
+    {% for link in book.link %}
+    {% if link.rel == 'http://opds-spec.org/image' or link.rel == 'http://opds-spec.org/image/thumbnail' %}
+    {% assign cover_url = link.href %}
+    {% break %}
+    {% endif %}
+    {% endfor %}
+
+    {% if cover_url != '' %}
+    {% assign full_cover_url = trmnl.plugin_settings.custom_fields_values.server_url | append: cover_url %}
+    <img src="{{ full_cover_url }}" alt="{{ book.title }} cover" class="book-cover image-dither image-stroke layout--block rounded--small md:rounded lg:rounded--large">
+    {% else %}
+    <div class="placeholder-cover layout--flex flex--center flex--column text--gray-2 value bg--gray-4 rounded--small md:rounded lg:rounded--large">No Cover</div>
+    {% endif %}
+
+    <div class="book-info">
+      <div class="richtext">
+        <div class="content text--center "  data-content-limiter="true">
+          <p class="book-title">{{ book.title }}</p>
+        </div>
+      </div>
+      <div class="richtext">
+
+        <div class="content text--center text--gray-2 content--small"  data-content-limiter="true">
+          <p class="book-author">
+            {% if book.author.name %}
+            {{ book.author.name }}
+            {% elsif book.author[0].name %}
+            {% for author in book.author limit: 2 %}
+            {{ author.name }}{% unless forloop.last and book.author.size <= 2 %}, {% endunless %}
+              {% endfor %}
+              {% if book.author.size > 2 %}et al.{% endif %}
+              {% else %}
+              Unknown Author
+              {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+</div>
+
+<div class="title_bar">
+  <img class="image" src="/images/plugins/trmnl--render.svg" />
+  <span class="title">Calibre Library</span>
+  <span class="instance">{{title}}</span>
+</div>

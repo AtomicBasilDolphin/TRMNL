@@ -1,0 +1,26 @@
+<style>
+  /* === Quadrant - 1 column  === */
+  .grid {
+    display: flex !important;
+  }
+
+  .book-cover,
+  .placeholder-cover {
+    height: 160px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+
+  .book {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+
+  /* Only show first book */
+  .book:nth-child(n+2) {
+    display: none;
+  }
+</style>
